@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Book List</h1>
+
+    <!-- Form to add new book -->
+    <form id="bookForm">
+        <input type="hidden" id="bookIndex">
+        <label for="bookTitle">Title:</label>
+        <input type="text" id="bookTitle" placeholder="Enter book title" required>
+        <label for="bookAuthor">Author:</label>
+        <input type="text" id="bookAuthor" placeholder="Enter book author" required>
+        <button type="submit" id="addButton">Add Book</button>
+        <button type="reset" id="resetButton">Clear</button>
+    </form>
+
+    <!-- Table for displaying book list -->
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="bookList">
+            <!-- Books will be displayed here -->
+        </tbody>
+    </table>
+
+    <script>
+        let books = [];
+        const bookForm = document.getElementById('bookForm');
+        const bookList = document.getElementById('bookList');
+        const bookIndex = document.getElementById('bookIndex');
+        const bookTitle = document.getElementById('bookTitle');
+        const bookAuthor = document.getElementById('bookAuthor');
+        const addButton = document.getElementById('addButton');
+
+        // Function to render book list
+        function renderBooks() {
+            bookList.innerHTML = '';
+            books.forEach((book, index) => {
+                bookList.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>
+                            <button onclick="editBook(${index})">Edit</button>
+                            <button onclick="deleteBook(${index})">Delete</button>
+                            <button onclick="viewBook(${index})">View</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Function to add/edit book
+        bookForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = bookTitle.value;
+            const author = bookAuthor.value;
+            const index = bookIndex.value;
+
+            if (index) {
+                books[index] = { title, author };
+                addButton.textContent = 'Add Book';
+                bookIndex.value = '';
+            } else {
+                books.push({ title, author });
+            }
+
+            bookForm.reset();
+            renderBooks();
+        });
+
+        // Function to edit a book
+        function editBook(index) {
+            bookTitle.value = books[index].title;
+            bookAuthor.value = books[index].author;
+            bookIndex.value = index;
+            addButton.textContent = 'Save Changes';
+        }
+
+        // Function to delete a book
+        function deleteBook(index) {
+            books.splice(index, 1);
+            renderBooks();
+        }
+
+        // Function to view book details
+        function viewBook(index) {
+            alert(`Title: ${books[index].title}\nAuthor: ${books[index].author}`);
+        }
+
+    </script>
+</body>
+</html>
